@@ -1,0 +1,35 @@
+{
+  "name": "@google/uniflow-polymer",
+  "flat": true,
+  "version": "1.0.0",
+  "description": "A straightforward way to architect Polymer application using unidirectional data flow.",
+  "contributors": [
+    "Andrei Militeev <militeev@gmail.com>"
+  ],
+  "keywords": [
+    "web-component",
+    "polymer",
+    "uniflow",
+    "unidirectional",
+    "flow"
+  ],
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/google/uniflow-polymer/",
+  "repository": {
+    "url": "https://github.com/google/uniflow-polymer/"
+  },
+  "dependencies": {
+    "@polymer/polymer": "^3.0.2"
+  },
+  "devDependencies": {
+    "@polymer/app-route": "^3.0.0-pre.19",
+    "@polymer/iron-localstorage": "^3.0.0-pre.19",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "todomvc-app-css": "^2.1.2",
+    "@polymer/iron-component-page": "^3.0.0-pre.19",
+    "@polymer/iron-demo-helpers": "^3.0.0-pre.19",
+    "@polymer/iron-test-helpers": "^3.0.0-pre.19",
+    "@polymer/paper-styles": "^3.0.0-pre.19",
+    "wct-browser-legacy": "^1.0.0"
+  }
+}

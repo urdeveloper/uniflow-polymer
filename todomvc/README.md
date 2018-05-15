@@ -1,10 +1,10 @@
 # \<todo\>
 
-ToDo MVC application implemented with UniFlow for Polymer 2.x
+ToDo MVC application implemented with UniFlow for Polymer 3.x
 
 ## Install Bower Dependencies
 
-Run `bower install`
+Run `npm install`
 
 ## Install the Polymer-CLI
 
@@ -12,8 +12,8 @@ Make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) 
 
 ## Run the Application
 
-Run `polymer serve` to serve your application locally.
+Run `polymer serve --npm` to serve your application locally.
 
 Open the by adding todomvc to the url, for example:
 
-http://127.0.0.1:8081/components/uniflow-polymer/todomvc
+http://127.0.0.1:8081/components/@google/uniflow-polymer/todomvc

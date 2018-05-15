@@ -1,4 +1,4 @@
-# UniFlow for Polymer 2.x
+# UniFlow for Polymer 3.x
 
 Set of mixins to enable uni-directional data flow in Polymer application.
 
@@ -41,22 +41,20 @@ hierarchical organization of action dispatchers.
 
 ### Example:
 
-#### HTML:
-```html
-<dom-module id="parent-dispatcher">
-<template>
-  <child-dispatcher-a state="{{state}}"></child-dispatcher-a>
-  <child-dispatcher-b state="{{state}}"></child-dispatcher-b>
-</template>
-</dom-module>
-```
-
-#### JavaScript:
-
 ```javascript
-class ParentDispatcher extends UniFlow.ActionDispatcher(Polymer.Element) {
+import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
+import {ActionDispatcher} from '@google/uniflow-polymer/action-dispatcher.js';
+
+class ParentDispatcher extends ActionDispatcher(PolymerElement) {
 
   static get is() { return 'parent-dispatcher'; }
+
+  static get template() {
+    return html`
+      <child-dispatcher-a state="{{state}}"></child-dispatcher-a>
+      <child-dispatcher-b state="{{state}}"></child-dispatcher-b>
+    `;
+  }
   
   MY_ACTION(detail) {
    // do MY_ACTION processing here
@@ -82,23 +80,24 @@ Only one element in the application is supposed to have this mixin.
 
 ### Example:
 
-#### HTML:
-```html
-<template>
-  <!-- action dispatchers in the order of action processing -->
-  <action-dispatcher-a state="{{state}}"></action-dispatcher-a>
-  <action-dispatcher-b state="{{state}}"></action-dispatcher-b>
-  
-  <!-- state-aware elements -->
-  <some-element state-path="state.someElement"></some-element>
-</template>
-```
-#### JavaScript:
-
 ```javascript
-class MyApp extends UniFlow.ApplicationState(Polymer.Element) {
+import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
+import {ApplicationState} from '@google/uniflow-polymer/application-state.js';
+
+class MyApp extends ApplicationState(PolymerElement) {
 
   static get is() { return 'my-app'; }
+
+  static get template() {
+    return html`
+      <!-- action dispatchers in the order of action processing -->
+      <action-dispatcher-a state="{{state}}"></action-dispatcher-a>
+      <action-dispatcher-b state="{{state}}"></action-dispatcher-b>
+      
+      <!-- state-aware elements -->
+      <some-element state-path="state.someElement"></some-element>
+    `;
+  }
 
   connectedCallback() {
     super.connectedCallback();
@@ -142,27 +141,30 @@ $selected property on list elements.
 
 ### Example:
 
-#### HTML:
-
-```html
-<ul>
-  <template id="list-template" is="dom-repeat" items="[[list]]">
-    <li id="[[item.id]]">
-      <paper-checkbox checked="{{item.$selected}}">
-      <model-view state-path="[[statePath]].list.#[[index]]"></model-view>
-    </li>
-  </template>
-</ul>
-Selected: [[selectedCount]] items
-<paper-button on-tap="onDeleteTap">Delete</paper-button>
-```
-
-#### JavaScript:
-
 ```javascript
-class ListElement extends Polymer.GestureEventListeners(UniFlow.ListView(UniFlow.StateAware(Polymer.Element))) {
+import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
+import {GestureEventListeners} from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
+import {StateAware} from '@google/uniflow-polymer/state-aware.js';
+import {ListView} from '@google/uniflow-polymer/list-view.js'
+
+class ListElement extends GestureEventListeners(ListView(StateAware(PolymerElement))) {
 
   static get is() { return "list-element"; }
+
+  static get template() {
+    return html`
+      <ul>
+        <template id="list-template" is="dom-repeat" items="[[list]]">
+          <li id="[[item.id]]">
+            <paper-checkbox checked="{{item.$selected}}">
+            <model-view state-path="[[statePath]].list.#[[index]]"></model-view>
+          </li>
+        </template>
+      </ul>
+      Selected: [[selectedCount]] items
+      <paper-button on-tap="onDeleteTap">Delete</paper-button>
+    `;
+  }
 
   onDeleteTap() {
     this.deleteSelected();
@@ -216,26 +218,26 @@ string for given error code (to translate validation error code to message)
 
 ### Example:
 
-#### HTML:
-
-```html
-<template>
- Model: [[model.id]]
- <paper-input value="{{model.name}}"
-              label="Name"
-              invalid="[[status.validation.name.invalid]]"
-              error-message="[[status.validation.name.errorMessage]]">
- </paper-input>
- <paper-button on-tap="onSaveTap">Save</paper-button>
-</template>
-```
-
-#### JavaScript:
-
 ```javascript
-class MyModel extends Polymer.GestureEventListeners(UniFlow.ModelView(Polymer.Element)) {
+import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
+import {GestureEventListeners} from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
+import {ModelView} from '@google/uniflow-polymer/model-view.js';
+
+class MyModel extends GestureEventListeners(ModelView(PolymerElement)) {
 
   static get is() { return "my-model"; }
+
+  static get template() {
+    return html`
+      Model: [[model.id]]
+      <paper-input value="{{model.name}}"
+                    label="Name"
+                    invalid="[[status.validation.name.invalid]]"
+                    error-message="[[status.validation.name.errorMessage]]">
+      </paper-input>
+      <paper-button on-tap="onSaveTap">Save</paper-button>
+    `;
+  }
   
   get saveAction() { return 'MY_SAVE'; }
   
@@ -306,21 +308,20 @@ path.
 
 ### Example:
 
-#### HTML:
-
-```html
-<template>
- <div>Value A: [[state.valueA]]</div>
- <div>Value B: [[valueB]]</div>
-</template>
-```
-
-#### JavaScript:
-
 ```javascript
-class MyElement extends UniFlow.StateAware(Polymer.Element) {
+import {PolymerElement, html} from '@polymer/polymer/polymer-element.js'
+import {StateAware} from '@google/uniflow-polymer/state-aware.js';
+
+class MyElement extends StateAware(PolymerElement) {
 
   static get is() { return 'my-element'; }
+
+  static get template() {
+    return html`
+      <div>Value A: [[state.valueA]]</div>
+      <div>Value B: [[valueB]]</div>
+    `;
+  }
   
   properties: {
     valueB: String

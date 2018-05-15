@@ -1,11 +1,12 @@
-<link rel="import" href="../../../polymer/polymer-element.html">
-<link rel="import" href="../../../polymer/lib/mixins/gesture-event-listeners.html">
-<link rel="import" href="../../model-view.html">
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { GestureEventListeners } from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
+import { ModelView } from '../../model-view.js';
+import './todo-styles.js';
+import { actions } from '../scripts/actions.js'
 
-<link rel="import" href="todo-styles.html">
-
-<dom-module id="todo-item">
-  <template>
+class TodoItem extends ModelView(GestureEventListeners(PolymerElement)) {
+  static get template() {
+    return html`
     <style include="todo-styles">
        :host {
         display: block;
@@ -108,7 +109,7 @@
       }
     </style>
 
-    <li completed$="[[model.completed]]" editing$="[[isEditing]]">
+    <li completed\$="[[model.completed]]" editing\$="[[isEditing]]">
       <div class="view">
         <input class="toggle" type="checkbox" checked="[[model.completed]]" on-change="onCompletedChange">
         <label on-dblclick="onViewDblClick">[[model.text]]</label>
@@ -116,77 +117,74 @@
       </div>
       <input id="text-input" class="edit" hidden="[[!isEditing]]" on-blur="onInputBlur" on-keydown="onInputKeyDown">
     </li>
-  </template>
-  <script>
-    class TodoItem extends UniFlow.ModelView(Polymer.GestureEventListeners(Polymer.Element)) {
+`;
+  }
 
-      static get is() {
-        return 'todo-item';
-      }
+  static get is() {
+    return 'todo-item';
+  }
 
 
-      static get properties() {
-        return {
-          filterBy: String,
-          isEditing: {
-            type: Boolean,
-            value: false
-          }
-        }
-      }
-
-      onCompletedChange(e) {
-        this.emitAction({
-          type: todo.actions.SELECTION_CHANGED,
-          model: this.model,
-          completed: e.target.checked
-        });
-      }
-
-      _removeTodo() {
-        this.emitAction({
-          type: todo.actions.REMOVE_TODO,
-          model: this.model
-        });
-      }
-
-      onDestroyTap(e) {
-        this._removeTodo();
-      }
-
-      onViewDblClick(e) {
-        this.$['text-input'].value = this.model.text;
-        this.isEditing = true;
-        this.$['text-input'].focus();
-      }
-
-      onInputBlur(e) {
-        if (this.isEditing) {
-          this._confirmEdit();
-        }
-      }
-
-      _confirmEdit() {
-        this.emitAction({
-          type: todo.actions.UPDATE_TODO,
-          model: this.model,
-          text: this.$['text-input'].value
-        });
-        this.isEditing = false;
-        if (!this.model.text.trim()) {
-          this._removeTodo();
-        }
-      }
-
-      onInputKeyDown(e) {
-        if (e.keyCode == 13) {
-          this.$['text-input'].blur();
-        } else if (e.keyCode == 27) {
-          this.isEditing = false;
-        }
+  static get properties() {
+    return {
+      filterBy: String,
+      isEditing: {
+        type: Boolean,
+        value: false
       }
     }
+  }
 
-    customElements.define(TodoItem.is, TodoItem);
-  </script>
-</dom-module>
+  onCompletedChange(e) {
+    this.emitAction({
+      type: actions.SELECTION_CHANGED,
+      model: this.model,
+      completed: e.target.checked
+    });
+  }
+
+  _removeTodo() {
+    this.emitAction({
+      type: actions.REMOVE_TODO,
+      model: this.model
+    });
+  }
+
+  onDestroyTap(e) {
+    this._removeTodo();
+  }
+
+  onViewDblClick(e) {
+    this.$['text-input'].value = this.model.text;
+    this.isEditing = true;
+    this.$['text-input'].focus();
+  }
+
+  onInputBlur(e) {
+    if (this.isEditing) {
+      this._confirmEdit();
+    }
+  }
+
+  _confirmEdit() {
+    this.emitAction({
+      type: actions.UPDATE_TODO,
+      model: this.model,
+      text: this.$['text-input'].value
+    });
+    this.isEditing = false;
+    if (!this.model.text.trim()) {
+      this._removeTodo();
+    }
+  }
+
+  onInputKeyDown(e) {
+    if (e.keyCode == 13) {
+      this.$['text-input'].blur();
+    } else if (e.keyCode == 27) {
+      this.isEditing = false;
+    }
+  }
+}
+
+customElements.define(TodoItem.is, TodoItem);
